@@ -3,5 +3,5 @@ module.exports = {
     PORT: 3308,
     USER: "root",
     PASSWORD: "domi",
-    DB: "serverRest"
+    DB: "docencia"
 };

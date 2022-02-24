@@ -101,6 +101,8 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { api } from 'boot/axios'
+import md5 from 'blueimp-md5'
 
 export default defineComponent({
   name: 'Register',
@@ -155,7 +157,39 @@ export default defineComponent({
       }
     },
     submit () {
-      // Clic botón registrar
+      api.post('/register', {
+        dni: this.dni.toString(),
+        username: this.username.toString(),
+        password: md5(this.password).toString(),
+        full_name: this.fullname.toString(),
+        avatar: null
+      }).then((response) => {
+        if (response.data.ok) {
+          this.$q.notify({
+            color: 'positive',
+            position: 'bottom',
+            message: 'Register Correcto',
+            icon: 'thumb_up_alt'
+          })
+          this.$store.commit('showcase/setToken', response.data.data.token)
+          this.$store.commit('showcase/setRefreshToken', response.data.data.refreshToken)
+          this.$store.commit('showcase/setUsername', this.username)
+        } else {
+          this.$q.notify({
+            color: 'negative',
+            position: 'center',
+            message: response.data.failed,
+            icon: 'report_problem'
+          })
+        }
+      }).catch(() => {
+        this.$q.notify({
+          color: 'negative',
+          position: 'bottom',
+          message: 'Register failed',
+          icon: 'report_problem'
+        })
+      })
     },
     switchVisibility () {
       this.visibility = !this.visibility

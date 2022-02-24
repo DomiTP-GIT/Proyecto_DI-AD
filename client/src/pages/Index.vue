@@ -66,6 +66,8 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { api } from 'boot/axios'
+const md5 = require('blueimp-md5')
 
 export default defineComponent({
   name: 'Login',
@@ -88,7 +90,36 @@ export default defineComponent({
       return ((val && val.length > 2) || 'El campo es muy corto')
     },
     submit () {
-      // Clic botón login
+      api.post('/login', {
+        username: this.username,
+        password: md5(this.password)
+      }).then((response) => {
+        if (response.data.ok) {
+          this.$q.notify({
+            color: 'positive',
+            position: 'center',
+            message: 'Login Correcto',
+            icon: 'thumb_up_alt'
+          })
+          this.$store.commit('showcase/setToken', response.data.data.token)
+          this.$store.commit('showcase/setRefreshToken', response.data.data.refreshToken)
+          this.$store.commit('showcase/setUsername', this.username)
+        } else {
+          this.$q.notify({
+            color: 'negative',
+            position: 'bottom',
+            message: response.data.failed,
+            icon: 'report_problem'
+          })
+        }
+      }).catch(() => {
+        this.$q.notify({
+          color: 'negative',
+          position: 'bottom',
+          message: 'Login failed',
+          icon: 'report_problem'
+        })
+      })
     },
     switchVisibility () {
       this.visibility = !this.visibility

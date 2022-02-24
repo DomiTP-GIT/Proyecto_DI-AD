@@ -12,7 +12,9 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "blueimp-md5": "^2.19.0",
     "core-js": "^3.6.5",
+    "https": "^1.0.0",
     "quasar": "^2.0.0",
     "vue": "^3.0.0",
     "vue-i18n": "^9.0.0",
